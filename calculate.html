@@ -1,0 +1,107 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname="datacalculator";
+
+$nodevice=$_POST['No_of_Devices'];
+$nomsg=$_POST['No_of_Msg'];
+$perMinute="";
+$perHour="";
+$perDay="";
+$perMonth="";
+$perYear="";
+
+//create calculation
+	$perMinute=60/$nomsg*$nodevice;
+	$perHour=$perMinute*60;
+	$perDay=$perHour*24;
+	$perMonth=$perDay*30;
+	$perYear=$perMonth*12;
+
+
+// Create connection
+$conn = mysql_connect($servername, $username, $password);
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysql_connect_error());
+}
+echo "Connected successfully <br>";
+
+
+mysql_select_db($dbname, $conn);
+
+$sql = "INSERT INTO dataprocessor (noDevices, noData, perHour, perMinute, perDay, perMonth, perYear)
+VALUES ('$nodevice','$nomsg','$perHour','$perMinute','$perDay','$perMonth','$perYear')";
+
+$sql1 = "SELECT perMinute, perHour, perDay ,perMonth ,perYear FROM dataprocessor ORDER BY id desc limit 1";
+$result = mysql_query($sql1,$conn);
+//$testquery = mysql_query($result) or die(mysql_error());
+
+//print values to screen
+/*while($row = mysql_fetch_assoc($result)){
+	echo $row['perMinute'];
+	echo $row['perHour'];
+	echo $row['perDay'];
+	echo $row['perMonth'];
+	echo $row['perYear'];
+  }*/
+
+  while($row = mysql_fetch_assoc($result)){
+	  echo "perMinute  " . $row['perMinute'] . " messages"; 
+	  echo "<br>";
+	echo "perHour  " . $row['perHour'] . " messages";
+	echo "<br>";
+	echo "perDay  " . $row['perDay'] . " messages";
+	echo "<br>";
+	echo "perMonth  " . $row['perMonth'] . " messages";
+	echo "<br>";
+	echo "perYear  " . $row['perYear'] . " messages";
+	echo "<br>";
+  //handle rows.
+}
+
+if ($perYear < "7 000 000") {
+    echo "We recommend Small Package";
+	echo "<br>";
+} elseif ($perYear < "30 000 000") {
+    echo "We recommend Medium Package";
+	echo "<br>";
+} else {
+    echo "We recommend Largest Package";
+	echo "<br>";
+}
+
+
+
+
+// Free the resources associated with the result set
+// This is done automatically at the end of the script
+mysql_free_result($result);
+
+
+/*if (!mysql_query($sql,$conn))
+  {
+  die('Error: ' . mysql_error());
+  }
+echo "1 record added"; */
+
+
+mysql_close($conn)
+
+?>
+<html>
+
+<body>
+
+
+
+			<input type="button" value="Proceed" onclick="location='new channel.html'" />
+       </body>     
+</html>     
+		
+		
+		
+		
+   
